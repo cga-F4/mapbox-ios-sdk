@@ -217,6 +217,7 @@
 @synthesize debugTiles = _debugTiles;
 @synthesize hideAttribution = _hideAttribution;
 @synthesize showLogoBug = _showLogoBug;
+@synthesize constrainingProjectedBounds = _constrainingProjectedBounds;
 
 #pragma mark -
 #pragma mark Initialization

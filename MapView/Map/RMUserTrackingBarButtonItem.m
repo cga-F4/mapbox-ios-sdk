@@ -43,6 +43,8 @@ typedef enum {
 @property (nonatomic, strong) UIImageView *buttonImageView;
 @property (nonatomic, strong) UIActivityIndicatorView *activityView;
 @property (nonatomic, assign) RMUserTrackingButtonState state;
+@property (nonatomic, strong) UIColor *normalTintColor;
+@property (nonatomic, strong) UIColor *activatedTintColor;
 
 - (void)createBarButtonItem;
 - (void)updateAppearance;
@@ -139,9 +141,19 @@ typedef enum {
 
 - (void)setTintColor:(UIColor *)newTintColor
 {
-    [super setTintColor:newTintColor];
+    _normalTintColor = newTintColor;
+    [self applyTintColor:newTintColor];
+    //[super setTintColor:newTintColor];
+}
 
+- (void)applyTintColor:(UIColor *)newTintColor
+{
     _segmentedControl.tintColor = newTintColor;
+}
+
+- (void)setActivatedTintColor:(UIColor *)color
+{
+    _activatedTintColor = color;
 }
 
 #pragma mark -
@@ -158,7 +170,7 @@ typedef enum {
     // "selection" state
     //
     _segmentedControl.selectedSegmentIndex = (_mapView.userTrackingMode == RMUserTrackingModeNone ? UISegmentedControlNoSegment : 0);
-
+    [self applyTintColor:(_mapView.userTrackingMode == RMUserTrackingModeNone ? _normalTintColor : _activatedTintColor)];
     // activity/image state
     //
     if (_mapView.userTrackingMode != RMUserTrackingModeNone && ( ! _mapView.userLocation || ! _mapView.userLocation.location || (_mapView.userLocation.location.coordinate.latitude == 0 && _mapView.userLocation.location.coordinate.longitude == 0)))

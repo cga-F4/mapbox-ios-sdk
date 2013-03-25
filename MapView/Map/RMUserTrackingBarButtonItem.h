@@ -39,6 +39,7 @@
 *   @param mapView The map view used by this bar button item.
 *   @return The initialized bar button item. */
 - (id)initWithMapView:(RMMapView *)mapView;
+-(void)setActivatedTintColor:(UIColor*)color;
 
 /** @name Accessing Properties */
 

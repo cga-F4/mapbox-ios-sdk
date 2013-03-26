@@ -1017,6 +1017,13 @@
     // Calculate rounded zoom
     float newZoom = fmin(ceilf([self zoom]) + 1.0, [self maxZoom]);
 
+    if (newZoom == self.zoom)
+    {
+        [_moveDelegateQueue setSuspended:NO];
+        [_zoomDelegateQueue setSuspended:NO];
+        return;
+    }
+    
     float factor = exp2f(newZoom - [self zoom]);
 
     if (factor > 2.25)

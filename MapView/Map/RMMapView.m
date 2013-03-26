@@ -3439,6 +3439,7 @@
     }
 }
 
+/*
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
     if (status == kCLAuthorizationStatusDenied || status == kCLAuthorizationStatusRestricted)
@@ -3447,6 +3448,7 @@
         self.showsUserLocation = NO;
     }
 }
+*/
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
 {

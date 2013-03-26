@@ -2739,6 +2739,10 @@
 
                 [_visibleAnnotations removeObject:annotation];
             }
+            else
+            {
+                [self correctScreenPosition:annotation animated:animated];
+            }
         }
 
         previousVisibleAnnotations = nil;

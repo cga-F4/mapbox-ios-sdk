@@ -123,6 +123,7 @@
     BOOL _delegateHasSingleTapOnMap;
     BOOL _delegateHasSingleTapTwoFingersOnMap;
     BOOL _delegateHasLongPressOnMap;
+    BOOL _delegateHasAfterLongPressOnMap;
     BOOL _delegateHasTapOnAnnotation;
     BOOL _delegateHasDoubleTapOnAnnotation;
     BOOL _delegateHasLongPressOnAnnotation;
@@ -529,6 +530,7 @@
     _delegateHasSingleTapOnMap = [_delegate respondsToSelector:@selector(singleTapOnMap:at:)];
     _delegateHasSingleTapTwoFingersOnMap = [_delegate respondsToSelector:@selector(singleTapTwoFingersOnMap:at:)];
     _delegateHasLongPressOnMap = [_delegate respondsToSelector:@selector(longPressOnMap:at:)];
+    _delegateHasAfterLongPressOnMap = [_delegate respondsToSelector:@selector(afterLongPressOnMap:at:)];
 
     _delegateHasTapOnAnnotation = [_delegate respondsToSelector:@selector(tapOnAnnotation:onMap:)];
     _delegateHasDoubleTapOnAnnotation = [_delegate respondsToSelector:@selector(doubleTapOnAnnotation:onMap:)];
@@ -1614,22 +1616,28 @@
 
 - (void)handleLongPress:(UILongPressGestureRecognizer *)recognizer
 {
-    if (recognizer.state != UIGestureRecognizerStateBegan)
-        return;
-
-    if ( ! _delegateHasLongPressOnMap && ! _delegateHasLongPressOnAnnotation)
-        return;
-
-    CALayer *hit = [_overlayView overlayHitTest:[recognizer locationInView:self]];
-
-    if (_currentAnnotation && [hit isEqual:_currentAnnotation.layer])
-        [self deselectAnnotation:_currentAnnotation animated:NO];
-
-    if ([hit isKindOfClass:[RMMapLayer class]] && _delegateHasLongPressOnAnnotation)
-        [_delegate longPressOnAnnotation:[((RMMapLayer *)hit) annotation] onMap:self];
-
-    else if (_delegateHasLongPressOnMap)
-        [_delegate longPressOnMap:self at:[recognizer locationInView:self]];
+    if (recognizer.state == UIGestureRecognizerStateBegan)
+    {
+        if ( ! _delegateHasLongPressOnMap && ! _delegateHasLongPressOnAnnotation)
+            return;
+        
+        CALayer *hit = [_overlayView overlayHitTest:[recognizer locationInView:self]];
+        
+        if (_currentAnnotation && [hit isEqual:_currentAnnotation.layer])
+            [self deselectAnnotation:_currentAnnotation animated:NO];
+        
+        if ([hit isKindOfClass:[RMMapLayer class]] && _delegateHasLongPressOnAnnotation)
+            [_delegate longPressOnAnnotation:[((RMMapLayer *)hit) annotation] onMap:self];
+        
+        else if (_delegateHasLongPressOnMap)
+            [_delegate longPressOnMap:self at:[recognizer locationInView:self]];
+    }
+    else if( recognizer.state == UIGestureRecognizerStateEnded )
+    {
+        if ( ! _delegateHasAfterLongPressOnMap )
+            return;
+       [_delegate afterLongPressOnMap:self at:[recognizer locationInView:self]];
+    }
 }
 
 // defines when the additional pan gesture recognizer on the scroll should handle the gesture

@@ -71,9 +71,12 @@ static RMConfiguration *RMConfigurationSharedInstance = nil;
 
     NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:&internalError];
 
-    if ( ! returnData)
+    if ( ! returnData )
     {
-        *error = internalError;
+        if( error )
+        {
+            *error = internalError;
+        }
 
         return nil;
     }

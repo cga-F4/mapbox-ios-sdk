@@ -3215,10 +3215,10 @@
     if ([newLocation distanceFromLocation:oldLocation])
     {
         self.userLocation.location = newLocation;
-
-        if (_delegateHasDidUpdateUserLocation)
-            [_delegate mapView:self didUpdateUserLocation:self.userLocation];
     }
+    
+    if (_delegateHasDidUpdateUserLocation)
+        [_delegate mapView:self didUpdateUserLocation:self.userLocation];
 
     if (self.userTrackingMode != RMUserTrackingModeNone)
     {

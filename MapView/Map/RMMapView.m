@@ -218,6 +218,7 @@
 @synthesize hideAttribution = _hideAttribution;
 @synthesize showLogoBug = _showLogoBug;
 @synthesize constrainingProjectedBounds = _constrainingProjectedBounds;
+@synthesize centerOffset = _centerOffset;
 
 #pragma mark -
 #pragma mark Initialization
@@ -289,6 +290,7 @@
     [self setTileSourcesZoom:initialTileSourceZoomLevel];
 
     [self setTileSource:newTilesource];
+    _centerOffset = RMProjectedPointMake(0,0);
     [self setCenterCoordinate:initialCenterCoordinate animated:NO];
 
     [self setDecelerationMode:RMMapDecelerationFast];
@@ -827,9 +829,9 @@
 
     RMProjectedRect planetBounds = _projection.planetBounds;
 	RMProjectedPoint normalizedProjectedPoint;
-	normalizedProjectedPoint.x = centerProjectedPoint.x + fabs(planetBounds.origin.x);
-	normalizedProjectedPoint.y = centerProjectedPoint.y + fabs(planetBounds.origin.y);
-
+	normalizedProjectedPoint.x = centerProjectedPoint.x + fabs(planetBounds.origin.x) - _centerOffset.x;
+	normalizedProjectedPoint.y = centerProjectedPoint.y + fabs(planetBounds.origin.y) - _centerOffset.y;
+    
     [_mapScrollView setContentOffset:CGPointMake(normalizedProjectedPoint.x / _metersPerPixel - _mapScrollView.bounds.size.width/2.0,
                                                 _mapScrollView.contentSize.height - ((normalizedProjectedPoint.y / _metersPerPixel) + _mapScrollView.bounds.size.height/2.0))
                            animated:animated];

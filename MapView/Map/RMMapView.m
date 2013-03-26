@@ -1386,11 +1386,7 @@
     if (RMProjectedSizeContainsProjectedSize(_constrainingProjectedBounds.size, projectedSize))
         return;
 
-    CGFloat factor = 1.0;
-    if (projectedSize.width > _constrainingProjectedBounds.size.width)
-        factor = (projectedSize.width / _constrainingProjectedBounds.size.width);
-    else
-        factor = (projectedSize.height / _constrainingProjectedBounds.size.height);
+    CGFloat factor = 1.001;
 
     *aContentSize = CGSizeMake((*aContentSize).width * factor, (*aContentSize).height * factor);
 }

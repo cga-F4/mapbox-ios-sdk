@@ -137,6 +137,8 @@ typedef enum : NSUInteger {
 
 @property (nonatomic, assign) RMProjectedRect constrainingProjectedBounds;
 
+@property (nonatomic, assign) RMProjectedPoint centerOffset;
+
 #pragma mark - Initializers
 
 /** @name Initializing a Map View */

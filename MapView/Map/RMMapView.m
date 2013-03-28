@@ -330,7 +330,7 @@
 	coordinate.latitude = kDefaultInitialLatitude;
 	coordinate.longitude = kDefaultInitialLongitude;
 
-    [self performInitializationWithTilesource:[RMMapBoxSource new]
+    [self performInitializationWithTilesource:nil
                              centerCoordinate:coordinate
                                     zoomLevel:kDefaultInitialZoomLevel
                                  maxZoomLevel:kDefaultMaximumZoomLevel
@@ -342,7 +342,7 @@
 
 - (id)initWithFrame:(CGRect)frame
 {
-    return [self initWithFrame:frame andTilesource:[RMMapBoxSource new]];
+    return [self initWithFrame:frame andTilesource:nil];
 }
 
 - (id)initWithFrame:(CGRect)frame andTilesource:(id <RMTileSource>)newTilesource

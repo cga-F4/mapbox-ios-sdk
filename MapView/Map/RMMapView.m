@@ -3538,7 +3538,7 @@
 - (void)setViewControllerPresentingAttribution:(UIViewController *)viewController
 {
     _viewControllerPresentingAttribution = viewController;
-    
+/*
     if (_viewControllerPresentingAttribution && ! _attributionButton)
     {
         _attributionButton = [UIButton buttonWithType:UIButtonTypeInfoLight];
@@ -3558,6 +3558,7 @@
     {
         [_attributionButton removeFromSuperview];
     }
+*/
 }
 
 - (void)showAttribution:(id)sender

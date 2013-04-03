@@ -3475,7 +3475,7 @@
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
 {
     if ([error code] == kCLErrorDenied)
-    {
+    {		
         self.userTrackingMode  = RMUserTrackingModeNone;
         self.showsUserLocation = NO;
 

@@ -330,7 +330,7 @@
 	coordinate.latitude = kDefaultInitialLatitude;
 	coordinate.longitude = kDefaultInitialLongitude;
 
-    [self performInitializationWithTilesource:[RMMapBoxSource new]
+    [self performInitializationWithTilesource:nil
                              centerCoordinate:coordinate
                                     zoomLevel:kDefaultInitialZoomLevel
                                  maxZoomLevel:kDefaultMaximumZoomLevel
@@ -342,7 +342,7 @@
 
 - (id)initWithFrame:(CGRect)frame
 {
-    return [self initWithFrame:frame andTilesource:[RMMapBoxSource new]];
+    return [self initWithFrame:frame andTilesource:nil];
 }
 
 - (id)initWithFrame:(CGRect)frame andTilesource:(id <RMTileSource>)newTilesource
@@ -409,16 +409,20 @@
 
 + (UIImage *)resourceImageNamed:(NSString *)imageName
 {
-    NSAssert([[NSBundle mainBundle] pathForResource:@"MapBox" ofType:@"bundle"], @"Resource bundle not found in application.");
-
     if ( ! [[imageName pathExtension] length])
         imageName = [imageName stringByAppendingString:@".png"];
 
-    NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"MapBox" ofType:@"bundle"];
-    NSBundle *resourcesBundle = [NSBundle bundleWithPath:bundlePath];
-    NSString *imagePath = [resourcesBundle pathForResource:imageName ofType:nil];
+    return [UIImage imageWithContentsOfFile:[[self class] pathForBundleResourceNamed:imageName ofType:nil]];
+}
 
-    return [UIImage imageWithContentsOfFile:imagePath];
++ (NSString *)pathForBundleResourceNamed:(NSString *)name ofType:(NSString *)extension
+{
+    NSAssert([[NSBundle mainBundle] pathForResource:@"MapBox" ofType:@"bundle"], @"Resource bundle not found in application.");
+
+    NSString *bundlePath      = [[NSBundle mainBundle] pathForResource:@"MapBox" ofType:@"bundle"];
+    NSBundle *resourcesBundle = [NSBundle bundleWithPath:bundlePath];
+
+    return [resourcesBundle pathForResource:name ofType:extension];
 }
 
 - (void)dealloc
@@ -2483,7 +2487,9 @@
 	normalizedProjectedPoint.y = projectedPoint.y + fabs(planetBounds.origin.y);
 
     // \bug: There is a rounding error here for high zoom levels
-    CGPoint projectedPixel = CGPointMake((normalizedProjectedPoint.x / _metersPerPixel) - _mapScrollView.contentOffset.x, (_mapScrollView.contentSize.height - (normalizedProjectedPoint.y / _metersPerPixel)) - _mapScrollView.contentOffset.y);
+    CGPoint projectedPixel = CGPointZero;
+    if( _metersPerPixel != 0 )
+        projectedPixel = CGPointMake((normalizedProjectedPoint.x / _metersPerPixel) - _mapScrollView.contentOffset.x, (_mapScrollView.contentSize.height - (normalizedProjectedPoint.y / _metersPerPixel)) - _mapScrollView.contentOffset.y);
 
 //    RMLog(@"pointToPixel: {%f,%f} -> {%f,%f}", projectedPoint.x, projectedPoint.y, projectedPixel.x, projectedPixel.y);
 
@@ -2953,12 +2959,11 @@
     {
         [_annotations removeObject:annotation];
         [_visibleAnnotations removeObject:annotation];
+        [self.quadTree removeAnnotation:annotation];
+        annotation.layer = nil;
     }
 
-    [self.quadTree removeAnnotation:annotation];
-
-    // Remove the layer from the screen
-    annotation.layer = nil;
+    [self correctPositionOfAllAnnotations];
 }
 
 - (void)removeAnnotations:(NSArray *)annotationsToRemove

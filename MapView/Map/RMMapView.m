@@ -124,6 +124,7 @@
     BOOL _delegateHasSingleTapTwoFingersOnMap;
     BOOL _delegateHasLongPressOnMap;
     BOOL _delegateHasAfterLongPressOnMap;
+    BOOL _delegateHasSelectAnnotation;
     BOOL _delegateHasTapOnAnnotation;
     BOOL _delegateHasDoubleTapOnAnnotation;
     BOOL _delegateHasLongPressOnAnnotation;
@@ -536,6 +537,7 @@
     _delegateHasLongPressOnMap = [_delegate respondsToSelector:@selector(longPressOnMap:at:)];
     _delegateHasAfterLongPressOnMap = [_delegate respondsToSelector:@selector(afterLongPressOnMap:at:)];
 
+    _delegateHasSelectAnnotation = [_delegate respondsToSelector:@selector(selectAnnotation:onMap:)];
     _delegateHasTapOnAnnotation = [_delegate respondsToSelector:@selector(tapOnAnnotation:onMap:)];
     _delegateHasDoubleTapOnAnnotation = [_delegate respondsToSelector:@selector(doubleTapOnAnnotation:onMap:)];
     _delegateHasLongPressOnAnnotation = [_delegate respondsToSelector:@selector(longPressOnAnnotation:onMap:)];
@@ -1724,7 +1726,14 @@
 - (void)tapOnAnnotation:(RMAnnotation *)anAnnotation atPoint:(CGPoint)aPoint
 {
     if (anAnnotation.isEnabled && ! [anAnnotation isEqual:_currentAnnotation])
+    {
+        if (_delegateHasSelectAnnotation && anAnnotation)
+        {
+            [_delegate selectAnnotation:anAnnotation onMap:self];
+        }
+
         [self selectAnnotation:anAnnotation animated:YES];
+    }
 
     if (_delegateHasTapOnAnnotation && anAnnotation)
     {

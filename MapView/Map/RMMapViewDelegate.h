@@ -137,6 +137,11 @@ typedef enum : NSUInteger {
 
 /** @name Responding to User Annotation Gestures */
 
+/** Tells the delegate when an annotation has been selected.
+ *   @param annotation The annotation that was selected.
+ *   @param map The map view. */
+- (void)selectAnnotation:(RMAnnotation *)annotation onMap:(RMMapView *)map;
+
 /** Tells the delegate when the user taps the layer for an annotation. 
 *   @param annotation The annotation that was tapped. 
 *   @param map The map view. */

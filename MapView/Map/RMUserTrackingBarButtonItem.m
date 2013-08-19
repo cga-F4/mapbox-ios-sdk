@@ -236,7 +236,14 @@ typedef enum {
 
 - (void)changeMode:(id)sender
 {
-    if (_mapView)
+    if( ![CLLocationManager locationServicesEnabled] )
+    {
+        NSString *title = @"Impossible de vous localiser";
+        NSString *explanationText = @"Veuillez activer les services de localisation dans les réglages de l'appareil.";
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:explanationText delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+    }
+    else if (_mapView)
     {
         switch (_mapView.userTrackingMode)
         {

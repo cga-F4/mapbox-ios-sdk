@@ -3488,10 +3488,11 @@
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
 {
-    if ([error code] == kCLErrorDenied)
+    //if ([error code] == kCLErrorDenied)
     {		
         self.userTrackingMode  = RMUserTrackingModeNone;
-        self.showsUserLocation = NO;
+        if( self.showsUserLocation )
+        	self.showsUserLocation = NO;
 
         if (_delegateHasDidFailToLocateUserWithError)
             [_delegate mapView:self didFailToLocateUserWithError:error];

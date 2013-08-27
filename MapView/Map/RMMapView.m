@@ -2904,11 +2904,11 @@
 
     for (CGFloat i = 0; i < [sortedAnnotations count]; i++)
     {
-        float zPosition = [[((RMAnnotation *)[sortedAnnotations objectAtIndex:i]).userInfo objectForKey:@"pinPriority"] floatValue];
-        if( !zPosition)
-        	((RMAnnotation *)[sortedAnnotations objectAtIndex:i]).layer.zPosition = (CGFloat)i;
-        else
-            ((RMAnnotation *)[sortedAnnotations objectAtIndex:i]).layer.zPosition  = zPosition;
+        float zPosition = (CGFloat)i;
+        RMAnnotation *annotation = (RMAnnotation *)[sortedAnnotations objectAtIndex:i];
+        if( annotation.userInfo && [annotation.userInfo objectForKey:@"pinPriority"])
+        	zPosition = [[annotation.userInfo objectForKey:@"pinPriority"] floatValue];
+        annotation.layer.zPosition  = zPosition;
     }
 
     // bring any active callout annotation to the front

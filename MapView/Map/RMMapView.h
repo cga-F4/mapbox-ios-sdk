@@ -511,4 +511,7 @@ typedef enum : NSUInteger {
 *   @param animated Whether changes to the map center or rotation should be animated when the mode is changed. */
 - (void)setUserTrackingMode:(RMUserTrackingMode)mode animated:(BOOL)animated;
 
+/** recompute the layer's order for annotation */
+- (void)correctOrderingOfAllAnnotations;
+
 @end

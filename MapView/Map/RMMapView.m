@@ -83,7 +83,6 @@
 
 - (void)correctPositionOfAllAnnotations;
 - (void)correctPositionOfAllAnnotationsIncludingInvisibles:(BOOL)correctAllLayers animated:(BOOL)animated;
-- (void)correctOrderingOfAllAnnotations;
 
 - (void)updateHeadingForDeviceOrientation;
 
@@ -2901,7 +2900,13 @@
     }];
 
     for (CGFloat i = 0; i < [sortedAnnotations count]; i++)
-        ((RMAnnotation *)[sortedAnnotations objectAtIndex:i]).layer.zPosition = (CGFloat)i;
+    {
+        float zPosition = [[((RMAnnotation *)[sortedAnnotations objectAtIndex:i]).userInfo objectForKey:@"pinPriority"] floatValue];
+        if( !zPosition)
+        	((RMAnnotation *)[sortedAnnotations objectAtIndex:i]).layer.zPosition = (CGFloat)i;
+        else
+            ((RMAnnotation *)[sortedAnnotations objectAtIndex:i]).layer.zPosition  = zPosition;
+    }
 
     // bring any active callout annotation to the front
     //

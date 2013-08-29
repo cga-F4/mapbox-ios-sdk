@@ -224,6 +224,9 @@ typedef enum : NSUInteger {
 // recenter the map on #boundsRect, expressed in projected meters
 - (void)setProjectedBounds:(RMProjectedRect)boundsRect animated:(BOOL)animated;
 
+// recenter the map on #boundsRect, expressed in projected meters
+- (void)setProjectedBounds:(RMProjectedRect)boundsRect animated:(BOOL)animated withMargin:(float)margin;
+
 /** Set zoom level, optionally with an animation. 
 *   @param newZoom The desired zoom level.
 *   @param animated Whether to animate the map change. */

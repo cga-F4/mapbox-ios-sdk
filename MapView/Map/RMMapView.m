@@ -894,6 +894,11 @@
 
 - (void)setProjectedBounds:(RMProjectedRect)boundsRect animated:(BOOL)animated
 {
+    [self setProjectedBounds:boundsRect animated:animated withMargin:0];
+}
+
+- (void)setProjectedBounds:(RMProjectedRect)boundsRect animated:(BOOL)animated withMargin:(float)margin
+{
     if (_constrainMovement)
         boundsRect = [self fitProjectedRect:boundsRect intoRect:_constrainingProjectedBounds];
 
@@ -908,6 +913,22 @@
                                  (boundsRect.size.width / _metersPerPixel) / zoomScale,
                                  (boundsRect.size.height / _metersPerPixel) / zoomScale);
     [_mapScrollView zoomToRect:zoomRect animated:animated];
+    
+    CGFloat boundsRatio = fabsf(zoomRect.size.width / zoomRect.size.height);
+    CGFloat mapViewRatio = fabsf(_mapScrollView.frame.size.width / _mapScrollView.frame.size.height);
+    if( boundsRatio < mapViewRatio )
+    {
+        float scale = boundsRatio/mapViewRatio;
+    	[_mapScrollView setZoomScale:scale*_mapScrollView.zoomScale];
+    }
+    
+    if( margin != 0)
+    {
+        float widthRatio = ( _mapScrollView.frame.size.width + margin ) / _mapScrollView.frame.size.width;
+        float heightRatio = ( _mapScrollView.frame.size.height + margin ) / _mapScrollView.frame.size.height;
+        float maxRatio = MAX(widthRatio,heightRatio);
+        [_mapScrollView setZoomScale:_mapScrollView.zoomScale / maxRatio];
+    }
 }
 
 - (BOOL)shouldZoomToTargetZoom:(float)targetZoom withZoomFactor:(float)zoomFactor

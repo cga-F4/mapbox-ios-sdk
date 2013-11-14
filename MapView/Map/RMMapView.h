@@ -342,11 +342,13 @@ typedef enum : NSUInteger {
 *   @param annotation The annotation object to select.
 *   @param animated If `YES`, the callout view is animated into position. */
 - (void)selectAnnotation:(RMAnnotation *)annotation animated:(BOOL)animated;
+- (void)selectAnnotation:(RMAnnotation *)annotation animated:(BOOL)animated automatic:(BOOL)automatic;
 
 /** Deselects the specified annotation and hides its callout view.
 *   @param annotation The annotation object to deselect.
 *   @param animated If `YES`, the callout view is animated offscreen. */
 - (void)deselectAnnotation:(RMAnnotation *)annotation animated:(BOOL)animated;
+- (void)deselectAnnotation:(RMAnnotation *)annotation animated:(BOOL)animated automatic:(BOOL)automatic;
 
 /** The annotation that is currently selected. */
 @property (nonatomic, strong) RMAnnotation *selectedAnnotation;

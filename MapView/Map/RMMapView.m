@@ -1781,15 +1781,24 @@
 
 - (void)selectAnnotation:(RMAnnotation *)anAnnotation animated:(BOOL)animated
 {
+    [self selectAnnotation:anAnnotation animated:animated automatic:NO];
+}
+
+- (void)selectAnnotation:(RMAnnotation *)anAnnotation animated:(BOOL)animated automatic:(BOOL)automatic
+{
     if ( ! anAnnotation && _currentAnnotation)
     {
-        [self deselectAnnotation:_currentAnnotation animated:animated];
+        [self deselectAnnotation:_currentAnnotation animated:animated automatic:automatic];
     }
     else if (anAnnotation.isEnabled && ! [anAnnotation isEqual:_currentAnnotation])
     {
-        [self deselectAnnotation:_currentAnnotation animated:NO];
+        [self deselectAnnotation:_currentAnnotation animated:NO automatic:automatic];
 
         _currentAnnotation = anAnnotation;
+        
+        NSMutableDictionary* userInfo = [NSMutableDictionary dictionaryWithDictionary:_currentAnnotation.userInfo];
+        [userInfo setObject:[NSNumber numberWithBool:!automatic] forKey:@"manuallySelected"];
+        _currentAnnotation.userInfo = userInfo;
 
         if (anAnnotation.layer.canShowCallout && anAnnotation.title)
         {
@@ -1827,7 +1836,8 @@
                                            animated:animated];
         }
 
-        [self correctPositionOfAllAnnotations];
+        if (!automatic)
+        	[self correctPositionOfAllAnnotations];
 
         anAnnotation.layer.zPosition = _currentCallout.layer.zPosition = MAXFLOAT;
 
@@ -1838,14 +1848,22 @@
 
 - (void)deselectAnnotation:(RMAnnotation *)annotation animated:(BOOL)animated
 {
+    [self deselectAnnotation:annotation animated:animated automatic:NO];
+}
+
+- (void)deselectAnnotation:(RMAnnotation *)annotation animated:(BOOL)animated automatic:(BOOL)automatic
+{
     if ([annotation isEqual:_currentAnnotation])
     {
         [_currentCallout dismissCalloutAnimated:animated];
-
-        if (animated)
-            [self performSelector:@selector(correctPositionOfAllAnnotations) withObject:nil afterDelay:1.0/3.0];
-        else
-            [self correctPositionOfAllAnnotations];
+		
+        if (!automatic)
+            {
+            if (animated)
+                [self performSelector:@selector(correctPositionOfAllAnnotations) withObject:nil afterDelay:1.0/3.0];
+            else
+                [self correctPositionOfAllAnnotations];
+            }
 
          _currentAnnotation = nil;
          _currentCallout = nil;
@@ -1867,18 +1885,25 @@
 
 - (NSTimeInterval)calloutView:(SMCalloutView *)calloutView delayForRepositionWithSize:(CGSize)offset
 {
-    [self registerMoveEventByUser:NO];
+    if ([[_currentAnnotation.userInfo objectForKey:@"manuallySelected"] boolValue])
+    {
+        [self registerMoveEventByUser:NO];
 
-    CGPoint contentOffset = _mapScrollView.contentOffset;
+        CGPoint contentOffset = _mapScrollView.contentOffset;
 
-    contentOffset.x -= offset.width;
-    contentOffset.y -= offset.height;
+        contentOffset.x -= offset.width;
+        contentOffset.y -= offset.height;
 
-    [_mapScrollView setContentOffset:contentOffset animated:YES];
+        [_mapScrollView setContentOffset:contentOffset animated:YES];
 
-    [self completeMoveEventAfterDelay:kSMCalloutViewRepositionDelayForUIScrollView];
+        [self completeMoveEventAfterDelay:kSMCalloutViewRepositionDelayForUIScrollView];
 
-    return kSMCalloutViewRepositionDelayForUIScrollView;
+        return kSMCalloutViewRepositionDelayForUIScrollView;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 - (void)tapOnCalloutAccessoryWithGestureRecognizer:(UIGestureRecognizer *)recognizer

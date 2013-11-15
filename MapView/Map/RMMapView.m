@@ -1838,6 +1838,8 @@
 
         if (!automatic)
         	[self correctPositionOfAllAnnotations];
+        else
+            [self correctOrderingOfAllAnnotations];
 
         anAnnotation.layer.zPosition = _currentCallout.layer.zPosition = MAXFLOAT;
 
@@ -1864,7 +1866,8 @@
             else
                 [self correctPositionOfAllAnnotations];
             }
-
+		else
+            [self correctOrderingOfAllAnnotations];
          _currentAnnotation = nil;
          _currentCallout = nil;
 

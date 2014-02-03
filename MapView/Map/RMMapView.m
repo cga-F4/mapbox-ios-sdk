@@ -216,6 +216,8 @@
     SMCalloutView *_currentCallout;
 
     BOOL _rotateAtMinZoom;
+    
+    BOOL _useCompass;
 }
 
 @synthesize decelerationMode = _decelerationMode;
@@ -318,7 +320,8 @@
 
     self.showLogoBug = YES;
 
-    if (RMPostVersion7)
+    _useCompass = NO;
+    if (RMPostVersion7 && _useCompass)
     {
         _compassButton = [UIButton buttonWithType:UIButtonTypeCustom];
         UIImage *compassImage = [RMMapView resourceImageNamed:@"Compass.png"];
